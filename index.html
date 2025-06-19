@@ -1699,19 +1699,32 @@
             }
             
             getAvailableColumn() {
-                const columnWidth = 150; // 카드 하나가 차지하는 폭
-                const maxColumns = Math.floor((this.canvas.width - 300) / columnWidth);
+                // 화면 크기에 따라 동적으로 열 간격 조정
+                const minColumnWidth = this.canvas.width < 600 ? 120 : 160; // 휴대폰에서는 더 조밀하게
+                const startX = 80; // 시작 위치
+                const endX = this.canvas.width - 80; // 끝 위치 (최소 여유 공간)
+                const availableWidth = endX - startX;
+                
+                // 최소 3개, 최대 8개의 열 보장
+                let maxColumns = Math.max(3, Math.min(8, Math.floor(availableWidth / minColumnWidth)));
+                const actualColumnWidth = availableWidth / maxColumns;
+                
+                console.log(`Canvas width: ${this.canvas.width}, Max columns: ${maxColumns}, Column width: ${actualColumnWidth}`);
+                
+                // 최근 사용된 열들 (더 짧은 시간으로)
+                const recentColumns = this.activeColumns.filter(col => 
+                    Date.now() - col.time < 800 // 0.8초로 단축
+                );
                 
                 // 사용 가능한 열들을 모두 찾기
                 const availableColumns = [];
                 
                 for (let i = 0; i < maxColumns; i++) {
-                    const columnX = 150 + i * columnWidth;
+                    const columnX = startX + i * actualColumnWidth + actualColumnWidth / 2; // 중앙 정렬
                     
-                    // 이 열에 최근 2초 이내에 생성된 카드가 있는지 확인
-                    const hasRecentCard = this.activeColumns.some(col => 
-                        Math.abs(col.x - columnX) < 100 && 
-                        Date.now() - col.time < 2000
+                    // 이 열에 최근에 생성된 카드가 있는지 확인 (더 작은 범위)
+                    const hasRecentCard = recentColumns.some(col => 
+                        Math.abs(col.x - columnX) < actualColumnWidth * 0.7
                     );
                     
                     if (!hasRecentCard) {
@@ -1719,13 +1732,70 @@
                     }
                 }
                 
-                // 사용 가능한 열이 있으면 랜덤하게 선택
+                console.log(`Available columns: ${availableColumns.length}`, availableColumns);
+                
+                // 강제로 다양성 보장: 연속으로 3번 같은 열이 나오지 않도록
+                if (!this.lastUsedColumns) this.lastUsedColumns = [];
+                
+                // 사용 가능한 열이 있으면 랜덤하게 선택 (단, 최근 사용한 열 제외)
                 if (availableColumns.length > 0) {
-                    return availableColumns[Math.floor(Math.random() * availableColumns.length)];
+                    let filteredColumns = availableColumns;
+                    
+                    // 최근 2개 열과 다른 열만 선택
+                    if (this.lastUsedColumns.length >= 2) {
+                        filteredColumns = availableColumns.filter(col => 
+                            !this.lastUsedColumns.slice(-2).some(lastCol => 
+                                Math.abs(col - lastCol) < actualColumnWidth * 0.5
+                            )
+                        );
+                    }
+                    
+                    // 필터링된 열이 없으면 원래 배열 사용
+                    if (filteredColumns.length === 0) {
+                        filteredColumns = availableColumns;
+                    }
+                    
+                    const selectedColumn = filteredColumns[Math.floor(Math.random() * filteredColumns.length)];
+                    
+                    // 사용한 열 기록 (최대 5개까지만 보관)
+                    this.lastUsedColumns.push(selectedColumn);
+                    if (this.lastUsedColumns.length > 5) {
+                        this.lastUsedColumns.shift();
+                    }
+                    
+                    console.log(`Selected column: ${selectedColumn}`);
+                    return selectedColumn;
                 }
                 
-                // 모든 열이 사용 중이면 랜덤한 열 사용
-                return 150 + Math.floor(Math.random() * maxColumns) * columnWidth;
+                // 모든 열이 사용 중이면 랜덤한 열 사용 (단, 최근 사용한 열 제외)
+                let randomColumns = [];
+                for (let i = 0; i < maxColumns; i++) {
+                    const columnX = startX + i * actualColumnWidth + actualColumnWidth / 2;
+                    randomColumns.push(columnX);
+                }
+                
+                // 최근 사용한 열 제외
+                if (this.lastUsedColumns.length > 0) {
+                    const filteredRandomColumns = randomColumns.filter(col => 
+                        !this.lastUsedColumns.slice(-1).some(lastCol => 
+                            Math.abs(col - lastCol) < actualColumnWidth * 0.5
+                        )
+                    );
+                    if (filteredRandomColumns.length > 0) {
+                        randomColumns = filteredRandomColumns;
+                    }
+                }
+                
+                const randomColumn = randomColumns[Math.floor(Math.random() * randomColumns.length)];
+                
+                // 사용한 열 기록
+                this.lastUsedColumns.push(randomColumn);
+                if (this.lastUsedColumns.length > 5) {
+                    this.lastUsedColumns.shift();
+                }
+                
+                console.log(`All columns busy, using random: ${randomColumn}`);
+                return randomColumn;
             }
             
             spawnSeries() {
@@ -1733,6 +1803,8 @@
                 
                 const seriesData = this.seriesPool[Math.floor(Math.random() * this.seriesPool.length)];
                 const columnX = this.getAvailableColumn();
+                
+                console.log(`Spawning series at column: ${columnX}`);
                 
                 // 기본 속도를 더 느리게 설정하고 레벨에 따라 점진적으로 증가
                 let baseSpeed = 0.3 + this.level * 0.25;
@@ -1760,9 +1832,9 @@
                     time: Date.now()
                 });
                 
-                // 오래된 열 정보 정리 (3초 이상 된 것들)
+                // 오래된 열 정보 정리 (1초 이상 된 것들)
                 this.activeColumns = this.activeColumns.filter(col => 
-                    Date.now() - col.time < 3000
+                    Date.now() - col.time < 1000
                 );
                 
                 this.series.push(series);
@@ -2069,6 +2141,10 @@
                 this.level = 1;
                 this.gameRunning = false;
                 this.gameStarted = false;
+                
+                // 열 관리 초기화
+                this.activeColumns = [];
+                this.lastUsedColumns = [];
                 
                 // 화면 요소들 정리
                 this.series.forEach(s => s.element.remove());
