@@ -1902,7 +1902,16 @@
                 // Update series - JavaScript로 직접 움직임 제어
                 this.series = this.series.filter(s => {
                     s.y += s.speed; // 매 프레임마다 위치 업데이트
-                    s.element.style.left = s.x + 'px';
+                    // 카드 엘리먼트 폭의 절반만큼 center-align, 0~(canvas.width - elementWidth) 사이로 제한
+const elementWidth = s.element.offsetWidth;
+const halfWidth   = elementWidth / 2;
+let leftPos       = s.x - halfWidth;
+
+// 좌/우 경계 밖으로 나가지 않도록 clamp
+const maxLeft = this.canvas.width - elementWidth;
+leftPos = Math.max(0, Math.min(maxLeft, leftPos));
+
+s.element.style.left = leftPos + 'px';
                     s.element.style.top = s.y + 'px';
                     
                     // 투명도도 위치에 따라 조정
