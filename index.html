@@ -55,6 +55,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            overflow: hidden;
             background: 
                 /* 구름 움직임 효과 */
                 radial-gradient(ellipse at 15% 25%, rgba(255, 255, 255, 0.25) 0%, transparent 45%),
@@ -139,10 +140,10 @@
                 rgba(255, 255, 255, 0.98) 0%, 
                 rgba(240, 248, 255, 0.95) 50%, 
                 rgba(230, 245, 255, 0.92) 100%);
-            border: 4px solid transparent;
-            background-clip: padding-box;
-            border-radius: 20px;
-            padding: 20px 25px;
+            border: 4px solid rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
             box-shadow: 
                 0 15px 35px rgba(0,0,0,0.4),
                 0 5px 15px rgba(0,0,0,0.2),
@@ -154,17 +155,13 @@
             font-family: 'Times New Roman', serif;
             color: #1a365d;
             text-align: center;
-            white-space: nowrap;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-width: 160px;
-            min-height: 80px;
             transform: scale(1);
-            animation: seriesGlow 4s ease-in-out infinite alternate;
         }
 
-        .series::before {
+        /* .series::before {
             content: '';
             position: absolute;
             top: 50%;
@@ -184,7 +181,7 @@
             z-index: -1;
             filter: blur(2px);
             animation: circularPulse 2s ease-in-out infinite;
-        }
+        } */
 
         .series:hover {
             transform: scale(1.05) translateY(-5px);
@@ -211,7 +208,7 @@
             color: #1a365d !important;
         }
 
-        @keyframes seriesGlow {
+        /* @keyframes seriesGlow {
             0% {
                 box-shadow: 
                     0 15px 35px rgba(0,0,0,0.4),
@@ -247,7 +244,7 @@
                 opacity: 0.8;
                 transform: translate(-50%, -50%) scale(1);
             }
-        }
+        } */
 
         @keyframes failShake {
             0%, 100% { 
@@ -387,9 +384,11 @@
             width: 100%;
             height: 150px;
             display: flex;
-            justify-content: space-around;
+            justify-content: space-between;
             align-items: center;
             z-index: 50;
+            padding: 0 20px;
+            box-sizing: border-box;
         }
 
         .launcher-slot {
@@ -688,20 +687,13 @@
             width: 100vw;
             height: 100vh;
             background: 
-                /* 구름 효과 */
-                radial-gradient(ellipse at 25% 20%, rgba(255, 255, 255, 0.4) 0%, transparent 45%),
-                radial-gradient(ellipse at 75% 25%, rgba(255, 255, 255, 0.3) 0%, transparent 40%),
-                radial-gradient(ellipse at 50% 10%, rgba(255, 255, 255, 0.2) 0%, transparent 35%),
-                radial-gradient(ellipse at 10% 60%, rgba(255, 255, 255, 0.15) 0%, transparent 30%),
-                /* 태양 효과 */
-                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.5) 0%, rgba(255, 165, 0, 0.3) 25%, transparent 45%),
-                /* 하늘 그라데이션 */
-                linear-gradient(180deg, 
-                    #87CEEB 0%, 
-                    #4682B4 25%, 
-                    #5F9EA0 50%, 
-                    #2F4F4F 75%, 
-                    #1e3a5f 100%);
+                /* 오버레이 효과 */
+                linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+                /* 베네치아 배경 이미지 */
+                url('https://dimg.donga.com/ugc/CDB/SHINDONGA/Article/5c/d1/2f/bc/5cd12fbc0ceed2738de6.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             animation: introSkyBreathing 25s ease-in-out infinite alternate;
             color: white;
             display: flex;
@@ -714,60 +706,9 @@
             box-sizing: border-box;
         }
 
-        #gameIntro::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                /* 건물 실루엣들 */
-                linear-gradient(to top,
-                    rgba(139, 69, 19, 0.8) 0%,
-                    rgba(160, 82, 45, 0.6) 20%,
-                    transparent 25%
-                ) 5% bottom / 12% 15% no-repeat,
-                linear-gradient(to top,
-                    rgba(160, 82, 45, 0.9) 0%,
-                    rgba(205, 133, 63, 0.7) 15%,
-                    transparent 20%
-                ) 85% bottom / 15% 18% no-repeat,
-                linear-gradient(to top,
-                    rgba(139, 69, 19, 0.7) 0%,
-                    rgba(160, 82, 45, 0.5) 25%,
-                    transparent 30%
-                ) 65% bottom / 10% 12% no-repeat,
-                linear-gradient(to top,
-                    rgba(205, 133, 63, 0.8) 0%,
-                    rgba(210, 180, 140, 0.6) 18%,
-                    transparent 22%
-                ) 25% bottom / 8% 14% no-repeat,
-                /* 전체 어두운 오버레이 */
-                rgba(0, 0, 0, 0.3);
-            z-index: -1;
-        }
 
-        #gameIntro::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 25%;
-            background: 
-                /* 물결 반사 효과 */
-                radial-gradient(ellipse at 20% 30%, rgba(135, 206, 235, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 20%, rgba(70, 130, 180, 0.3) 0%, transparent 40%),
-                radial-gradient(ellipse at 50% 40%, rgba(255, 215, 0, 0.2) 0%, transparent 30%),
-                /* 물 색상 */
-                linear-gradient(180deg, 
-                    rgba(30, 58, 95, 0.8) 0%, 
-                    rgba(25, 45, 75, 0.9) 50%, 
-                    rgba(15, 20, 25, 0.95) 100%);
-            z-index: -1;
-            animation: introWaterFlow 12s ease-in-out infinite;
-        }
+
+
 
         @keyframes introSkyBreathing {
             0%, 100% {
@@ -778,20 +719,7 @@
             }
         }
 
-        @keyframes introWaterFlow {
-            0%, 100% { 
-                transform: translateX(0);
-                filter: brightness(1) saturate(1);
-            }
-            33% {
-                transform: translateX(-15px);
-                filter: brightness(1.1) saturate(1.2);
-            }
-            66% {
-                transform: translateX(10px);
-                filter: brightness(1.05) saturate(1.1);
-            }
-        }
+
 
         @keyframes waterFlow {
             0%, 100% { 
@@ -805,15 +733,22 @@
         }
 
         #gameIntro h1 {
-            font-size: 32px;
+            font-family: 'Georgia', 'Times New Roman', serif;
+            font-size: 48px;
+            font-style: italic;
+            font-weight: bold;
+            letter-spacing: 3px;
+            text-transform: uppercase;
             margin-bottom: 30px;
             color: #4CAF50;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.8);
         }
 
-        #gameIntro .intro-content {
-            max-width: 400px;
-            margin-bottom: 40px;
+        #gameIntro .intro-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
         }
 
         #gameIntro .rule {
@@ -865,28 +800,43 @@
             line-height: 1.4;
         }
 
-        #startButton {
+        #startButton, #helpButton {
             font-size: 26px;
             padding: 18px 45px;
-            background: 
-                linear-gradient(135deg, 
-                    #4CAF50 0%, 
-                    #66BB6A 50%, 
-                    #81C784 100%);
             color: white;
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 
-                0 8px 25px rgba(76, 175, 80, 0.5),
-                0 4px 15px rgba(76, 175, 80, 0.3),
-                inset 0 2px 4px rgba(255, 255, 255, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
             position: relative;
             overflow: hidden;
+        }
+
+        #startButton {
+            background: 
+                linear-gradient(135deg, 
+                    #4CAF50 0%, 
+                    #66BB6A 50%, 
+                    #81C784 100%);
+            box-shadow: 
+                0 8px 25px rgba(76, 175, 80, 0.5),
+                0 4px 15px rgba(76, 175, 80, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
             animation: buttonPulse 3s ease-in-out infinite;
+        }
+
+        #helpButton {
+            background: 
+                linear-gradient(135deg, 
+                    #2196F3 0%, 
+                    #42A5F5 50%, 
+                    #64B5F6 100%);
+            box-shadow: 
+                0 8px 25px rgba(33, 150, 243, 0.5),
+                0 4px 15px rgba(33, 150, 243, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.2);
         }
 
         #startButton::before {
@@ -911,12 +861,86 @@
                 inset 0 2px 4px rgba(255, 255, 255, 0.3);
         }
 
+        #helpButton:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 
+                0 12px 35px rgba(33, 150, 243, 0.7),
+                0 6px 20px rgba(33, 150, 243, 0.5),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3);
+        }
+
         #startButton:hover::before {
             left: 100%;
         }
 
-        #startButton:active {
+        #startButton:active, #helpButton:active {
             transform: translateY(-2px) scale(1.02);
+        }
+
+        /* 설명 팝업 스타일 */
+        #helpPopup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .popup-content {
+            background: 
+                linear-gradient(135deg, 
+                    rgba(255, 255, 255, 0.95) 0%, 
+                    rgba(240, 248, 255, 0.9) 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.3),
+                inset 0 2px 4px rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px) saturate(1.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: popupSlideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .popup-content h2 {
+            color: #1a365d;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .close-hint {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes popupSlideIn {
+            from { 
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+            to { 
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
         }
 
         @keyframes buttonPulse {
@@ -1152,8 +1176,17 @@
 </head>
 <body>
     <div id="gameIntro">
-        <h1>🌊 베네치아 급수 게임 🌊</h1>
-        <div class="intro-content">
+                    <h1> VENICE <br>SERIES </h1>
+        <div class="intro-buttons">
+            <button id="helpButton">설명</button>
+            <button id="startButton">게임 시작</button>
+        </div>
+    </div>
+
+    <!-- 설명 팝업 -->
+    <div id="helpPopup" style="display: none;">
+        <div class="popup-content">
+            <h2>🎮 게임 설명</h2>
             <div class="rule">
                 <h3>🎯 게임 목표</h3>
                 <p>하늘에서 떨어지는 급수의 수렴/발산을 판정하고<br>올바른 폭탄으로 맞춰보세요!</p>
@@ -1170,8 +1203,8 @@
                 <h3>❤️ 생명</h3>
                 <p>급수가 물에 닿거나 틀리면 하트 감소<br>5번 실수하면 게임 오버!</p>
             </div>
+            <p class="close-hint">화면을 터치하면 닫힙니다</p>
         </div>
-        <button id="startButton">게임 시작</button>
     </div>
 
     <div id="gameContainer">
@@ -1586,11 +1619,46 @@
                 this.spawnSeries();
             }
             
+            showHelpPopup() {
+                const helpPopup = document.getElementById('helpPopup');
+                if (helpPopup) {
+                    helpPopup.style.display = 'flex';
+                }
+            }
+            
+            hideHelpPopup() {
+                const helpPopup = document.getElementById('helpPopup');
+                if (helpPopup) {
+                    helpPopup.style.display = 'none';
+                }
+            }
+            
             setupEventListeners() {
                 const startButton = document.getElementById('startButton');
+                const helpButton = document.getElementById('helpButton');
+                const helpPopup = document.getElementById('helpPopup');
+                
                 if (startButton) {
                     startButton.addEventListener('click', () => {
                         this.startGameFromIntro();
+                    });
+                }
+                
+                if (helpButton) {
+                    helpButton.addEventListener('click', () => {
+                        this.showHelpPopup();
+                    });
+                }
+                
+                if (helpPopup) {
+                    helpPopup.addEventListener('click', () => {
+                        this.hideHelpPopup();
+                    });
+                    
+                    // 터치 이벤트도 추가
+                    helpPopup.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        this.hideHelpPopup();
                     });
                 }
                 
@@ -1633,8 +1701,15 @@
                 this.isAiming = true;
                 this.aimingBombType = type;
                 this.aimingBomb = element;
-                this.aimAngle = 0;
-                this.aimDirection = 1;
+                
+                // 수렴폭탄은 180도에서 시작해서 반시계방향 (60~180도), 발산폭탄은 0도에서 시작해서 시계방향 (0~120도)
+                if (type === 'convergent') {
+                    this.aimAngle = 180;
+                    this.aimDirection = -1;
+                } else {
+                    this.aimAngle = 0;
+                    this.aimDirection = 1;
+                }
                 
                 // 폭탄에 조준 중 표시
                 element.classList.add('aiming');
@@ -1660,15 +1735,27 @@
                 const animate = () => {
                     if (!this.isAiming) return;
                     
-                    // 각도 업데이트 (0도에서 180도 사이) - 속도 50% 증가
-                    this.aimAngle += this.aimDirection * 3; // 2에서 3으로 증가 (50% 증가)
+                    // 각도 업데이트
+                    this.aimAngle += this.aimDirection * 2;
                     
-                    if (this.aimAngle >= 180) {
-                        this.aimAngle = 180;
-                        this.aimDirection = -1;
-                    } else if (this.aimAngle <= 0) {
-                        this.aimAngle = 0;
-                        this.aimDirection = 1;
+                    if (this.aimingBombType === 'convergent') {
+                        // 수렴폭탄: 180도에서 60도 사이를 반시계방향으로
+                        if (this.aimAngle <= 60) {
+                            this.aimAngle = 60;
+                            this.aimDirection = 1;
+                        } else if (this.aimAngle >= 180) {
+                            this.aimAngle = 180;
+                            this.aimDirection = -1;
+                        }
+                    } else {
+                        // 발산폭탄: 0도에서 120도 사이를 시계방향으로
+                        if (this.aimAngle >= 120) {
+                            this.aimAngle = 120;
+                            this.aimDirection = -1;
+                        } else if (this.aimAngle <= 0) {
+                            this.aimAngle = 0;
+                            this.aimDirection = 1;
+                        }
                     }
                     
                     // 화살표 회전 (180도 빼서 올바른 방향으로)
@@ -1839,7 +1926,7 @@
                 
                 this.series.push(series);
                 
-                setTimeout(() => this.spawnSeries(), Math.max(5000 - this.level * 1000, 800));
+                setTimeout(() => this.spawnSeries(), Math.max(5000 - this.level * 100, 800));
             }
             
             createSeriesElement(seriesData) {
@@ -1902,16 +1989,17 @@
                 // Update series - JavaScript로 직접 움직임 제어
                 this.series = this.series.filter(s => {
                     s.y += s.speed; // 매 프레임마다 위치 업데이트
+                    
                     // 카드 엘리먼트 폭의 절반만큼 center-align, 0~(canvas.width - elementWidth) 사이로 제한
-const elementWidth = s.element.offsetWidth;
-const halfWidth   = elementWidth / 2;
-let leftPos       = s.x - halfWidth;
-
-// 좌/우 경계 밖으로 나가지 않도록 clamp
-const maxLeft = this.canvas.width - elementWidth;
-leftPos = Math.max(0, Math.min(maxLeft, leftPos));
-
-s.element.style.left = leftPos + 'px';
+                    const elementWidth = s.element.offsetWidth;
+                    const halfWidth = elementWidth / 2;
+                    let leftPos = s.x - halfWidth;
+                    
+                    // 좌/우 경계 밖으로 나가지 않도록 clamp
+                    const maxLeft = this.canvas.width - elementWidth;
+                    leftPos = Math.max(0, Math.min(maxLeft, leftPos));
+                    
+                    s.element.style.left = leftPos + 'px';
                     s.element.style.top = s.y + 'px';
                     
                     // 투명도도 위치에 따라 조정
@@ -1972,11 +2060,18 @@ s.element.style.left = leftPos + 'px';
                 const seriesRect = series.element.getBoundingClientRect();
                 const bombSize = 40; // 폭탄 크기의 절반
                 
-                // 급수카드의 실제 화면 위치와 크기
-                const cardLeft = series.x;
-                const cardRight = series.x + seriesRect.width;
+                // 급수카드의 실제 화면 위치와 크기 (중앙 정렬 고려)
+                const elementWidth = series.element.offsetWidth;
+                const halfWidth = elementWidth / 2;
+                let cardLeft = series.x - halfWidth;
+                
+                // 경계 제한 적용
+                const maxLeft = this.canvas.width - elementWidth;
+                cardLeft = Math.max(0, Math.min(maxLeft, cardLeft));
+                
+                const cardRight = cardLeft + elementWidth;
                 const cardTop = series.y;
-                const cardBottom = series.y + seriesRect.height;
+                const cardBottom = series.y + series.element.offsetHeight;
                 
                 // 폭탄의 영역
                 const bombLeft = bomb.x - bombSize/2;
@@ -1995,8 +2090,10 @@ s.element.style.left = leftPos + 'px';
                 const correct = (bomb.type === 'convergent') === series.convergent;
                 
                 if (correct) {
-                    // 정답 - 폭발 효과
-                    this.createCorrectExplosion(bomb.x, bomb.y, series.x + 60, series.y + 25);
+                    // 정답 - 폭발 효과 (카드 중앙 위치 계산)
+                    const cardCenterX = series.x;
+                    const cardCenterY = series.y + 25;
+                    this.createCorrectExplosion(bomb.x, bomb.y, cardCenterX, cardCenterY);
                     this.score += 10 * this.level;
                     this.updateScore();
                     
@@ -2009,8 +2106,10 @@ s.element.style.left = leftPos + 'px';
                     }, 400);
                     
                 } else {
-                    // 오답 - 폭탄 흡수 효과 후 카드도 사라짐
-                    this.createAbsorptionEffect(bomb.x, bomb.y, series.x + 60, series.y + 25);
+                    // 오답 - 폭탄 흡수 효과 후 카드도 사라짐 (카드 중앙 위치 계산)
+                    const cardCenterX = series.x;
+                    const cardCenterY = series.y + 25;
+                    this.createAbsorptionEffect(bomb.x, bomb.y, cardCenterX, cardCenterY);
                     this.loseHeart();
                     
                     // 오답이어도 카드는 사라짐 (흡수 효과 후)
