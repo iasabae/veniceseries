@@ -161,6 +161,23 @@
             transform: scale(1);
         }
 
+        .series.golden {
+            background: linear-gradient(135deg, 
+                rgba(255, 215, 0, 0.98) 0%, 
+                rgba(255, 223, 0, 0.95) 30%, 
+                rgba(255, 193, 7, 0.92) 70%, 
+                rgba(255, 165, 0, 0.9) 100%);
+            border: 4px solid rgba(255, 215, 0, 0.9);
+            box-shadow: 
+                0 15px 35px rgba(255, 215, 0, 0.6),
+                0 5px 15px rgba(255, 215, 0, 0.4),
+                inset 0 2px 0 rgba(255, 255, 255, 0.9),
+                inset 0 -2px 0 rgba(255, 165, 0, 0.3),
+                0 0 30px rgba(255, 215, 0, 0.5);
+            animation: goldenPulse 2s ease-in-out infinite alternate;
+            color: #8B4513;
+        }
+
         /* .series::before {
             content: '';
             position: absolute;
@@ -208,6 +225,18 @@
             color: #1a365d !important;
         }
 
+        .series.golden .MathJax {
+            color: #8B4513 !important;
+        }
+
+        .series.golden mjx-container {
+            color: #8B4513 !important;
+        }
+
+        .series.golden mjx-container mjx-math {
+            color: #8B4513 !important;
+        }
+
         /* @keyframes seriesGlow {
             0% {
                 box-shadow: 
@@ -245,6 +274,27 @@
                 transform: translate(-50%, -50%) scale(1);
             }
         } */
+
+        @keyframes goldenPulse {
+            0% {
+                box-shadow: 
+                    0 15px 35px rgba(255, 215, 0, 0.6),
+                    0 5px 15px rgba(255, 215, 0, 0.4),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.9),
+                    inset 0 -2px 0 rgba(255, 165, 0, 0.3),
+                    0 0 30px rgba(255, 215, 0, 0.5);
+                transform: scale(1);
+            }
+            100% {
+                box-shadow: 
+                    0 15px 35px rgba(255, 215, 0, 0.8),
+                    0 5px 15px rgba(255, 215, 0, 0.6),
+                    inset 0 2px 0 rgba(255, 255, 255, 0.9),
+                    inset 0 -2px 0 rgba(255, 165, 0, 0.3),
+                    0 0 50px rgba(255, 215, 0, 0.8);
+                transform: scale(1.02);
+            }
+        }
 
         @keyframes failShake {
             0%, 100% { 
@@ -559,6 +609,17 @@
             pointer-events: none;
         }
 
+        .heart-gain-popup {
+            position: absolute;
+            color: #E91E63;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            animation: heartGainFloat 1.5s ease-out forwards;
+            z-index: 80;
+            pointer-events: none;
+        }
+
         @keyframes explode {
             0% { 
                 transform: scale(0) rotate(0deg); 
@@ -654,6 +715,21 @@
             100% { 
                 opacity: 0;
                 transform: translateY(-50px) scale(1.5);
+            }
+        }
+
+        @keyframes heartGainFloat {
+            0% { 
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            30% {
+                opacity: 1;
+                transform: translateY(-20px) scale(1.3);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(-80px) scale(1.8);
             }
         }
 
@@ -2559,6 +2635,9 @@
                 
                 console.log(`Spawning series at column: ${columnX}`);
                 
+                // 7% 확률로 황금빛 카드 생성
+                const isGolden = Math.random() < 0.07;
+                
                 // 기본 속도를 더 느리게 설정하고 레벨에 따라 점진적으로 증가
                 let baseSpeed = 0.3 + this.level * 0.25;
                 
@@ -2576,7 +2655,8 @@
                     speed: baseSpeed,
                     convergent: seriesData.convergent,
                     display: seriesData.display,
-                    element: this.createSeriesElement(seriesData)
+                    isGolden: isGolden,
+                    element: this.createSeriesElement(seriesData, isGolden)
                 };
                 
                 // 활성 열에 추가
@@ -2595,9 +2675,9 @@
                 setTimeout(() => this.spawnSeries(), Math.max(5000 - this.level * 100, 800));
             }
             
-            createSeriesElement(seriesData) {
+            createSeriesElement(seriesData, isGolden = false) {
                 const div = document.createElement('div');
-                div.className = 'series';
+                div.className = isGolden ? 'series golden' : 'series';
                 div.innerHTML = seriesData.display;
                 div.style.left = '0px';
                 div.style.top = '0px';
@@ -2759,7 +2839,13 @@
                     // 정답 - 폭발 효과 (카드 중앙 위치 계산)
                     const cardCenterX = series.x;
                     const cardCenterY = series.y + 25;
-                    this.createCorrectExplosion(bomb.x, bomb.y, cardCenterX, cardCenterY);
+                    this.createCorrectExplosion(bomb.x, bomb.y, cardCenterX, cardCenterY, series.isGolden);
+                    
+                    // 황금 카드인 경우 하트 증가
+                    if (series.isGolden) {
+                        this.gainHeart(cardCenterX, cardCenterY);
+                    }
+                    
                     this.score += 10 * this.level;
                     this.updateScore();
                     
@@ -2791,7 +2877,7 @@
                 this.series.splice(seriesIndex, 1);
             }
             
-            createCorrectExplosion(bombX, bombY, seriesX, seriesY) {
+            createCorrectExplosion(bombX, bombY, seriesX, seriesY, isGolden = false) {
                 // 메인 폭발 효과
                 const explosion = document.createElement('div');
                 explosion.className = 'explosion correct-explosion';
@@ -2804,6 +2890,13 @@
                 seriesExplosion.className = 'explosion series-explosion';
                 seriesExplosion.style.left = (seriesX - 40) + 'px';
                 seriesExplosion.style.top = (seriesY - 40) + 'px';
+                
+                // 황금 카드인 경우 특별한 효과
+                if (isGolden) {
+                    seriesExplosion.style.background = 'radial-gradient(circle, #FFD700, #FFA500, transparent)';
+                    seriesExplosion.style.boxShadow = '0 0 60px #FFD700, 0 0 120px #FFD700';
+                }
+                
                 document.getElementById('gameContainer').appendChild(seriesExplosion);
                 
                 // 점수 표시 효과
@@ -2851,6 +2944,23 @@
                     { element: seriesGlow, time: 800 },
                     { element: failPopup, time: 1200 }
                 );
+            }
+            
+            gainHeart(x, y) {
+                if (this.hearts < 5) {
+                    this.hearts++;
+                    this.updateHearts();
+                    
+                    // 하트 획득 팝업 효과
+                    const heartPopup = document.createElement('div');
+                    heartPopup.className = 'heart-gain-popup';
+                    heartPopup.textContent = '❤️ +1';
+                    heartPopup.style.left = x + 'px';
+                    heartPopup.style.top = (y - 30) + 'px';
+                    document.getElementById('gameContainer').appendChild(heartPopup);
+                    
+                    this.explosions.push({ element: heartPopup, time: 1500 });
+                }
             }
             
             loseHeart() {
